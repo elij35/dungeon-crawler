@@ -18,7 +18,7 @@ namespace GameDev
     public class Game
     {
         /**
-         * use the following to store and control the movement 
+         * use the following to store and control the movement 3
          */
         public enum PlayerActions { NOTHING, NORTH, EAST, SOUTH, WEST, PICKUP, ATTACK, DROP, QUIT };
         private PlayerActions action = PlayerActions.NOTHING;
@@ -45,12 +45,22 @@ namespace GameDev
          * Please use and implement this method to read the user input.
          * 
          * Return the input as string to be further processed
-         * 
+         *  
          */
         private string ReadUserInput()
-        {
-            string inputRead = string.Empty;
-            //modify
+        {            
+            string inputRead;
+
+            if (GameIsRunning() == GameState.RUN)
+            {
+                inputRead = Console.ReadKey(true).KeyChar.ToString();
+            } 
+            
+            else
+            {
+                inputRead = Console.ReadLine();
+            }
+
             return inputRead;
         }
 
@@ -60,9 +70,8 @@ namespace GameDev
         /// Returns the number of steps a player made on the current map. The counter only counts steps, not actions.
         /// </summary>
         public int GetStepCounter()
-        {
-            //modify
-            return -1;
+        {            
+            return counter;
  
         }
 
@@ -78,8 +87,40 @@ namespace GameDev
          */
         public void ProcessUserInput(string input)
         {
-            //modify
+            string[] inputPart = input.Split(" ");
 
+            if (inputPart[0] == "load")
+            {
+                LoadMapFromFile("maps/" + inputPart[1]);
+            }
+
+            else if (inputPart[0] == "start" && currentMap != string.Empty)
+            {
+                status = GameState.RUN;
+            }
+
+            if (status == GameState.RUN)
+            {
+                if (input == "w")
+                {
+                    action = PlayerActions.NORTH;
+                }
+                else if (input == "a")
+                {
+                    action = PlayerActions.WEST;
+                }
+                else if (input == "s")
+                {
+                    action = PlayerActions.SOUTH;
+                }
+                else if (input == "d")
+                {
+                    action = PlayerActions.EAST;
+                }
+            }
+
+            else { }
+            
         }
 
         /**
@@ -94,7 +135,28 @@ namespace GameDev
          */
         public bool Update(GameState status)
         {
-            //modify
+
+            //Player presses movement key -> set action in process input -> handle input in update -> keep track of previous position
+            //-> work out new position -> check if new position is free to move to -> move to new position -> reset old position to whatever it was before the player was there
+            //(',', 'C' whether it was a coin or empty space)
+            if (action == PlayerActions.NORTH)
+            {
+               //Here I need to add array coordinates to move the player
+            }
+            else if (action == PlayerActions.SOUTH)
+            {
+                workingMap = new char[0][];
+            }
+            else if(action == PlayerActions.EAST)
+            {
+                workingMap = new char[0][];
+            }
+            else if(action == PlayerActions.WEST)
+            {
+                workingMap = new char[1][];
+            }
+
+
             return false;
         }
 
@@ -108,9 +170,10 @@ namespace GameDev
          * The method returns true if the game is running and it can draw something, false otherwise.
         */
         public bool PrintMapToConsole()
-        {
-            //modify
-            return false;
+        {          
+
+            
+            return true;
         }
         /**
          * Additional Visual Output element. 
@@ -121,7 +184,7 @@ namespace GameDev
          */
         public bool PrintExtraInfo()
         {
-            //modify
+
             return false;
         }
 
@@ -134,9 +197,45 @@ namespace GameDev
         */
         public bool LoadMapFromFile(String mapName)
         {
-            //modify
+            FileInfo fileInfo = new FileInfo("maps/" + mapName);
 
-            return false;
+            //Checking file exists
+            if (!fileInfo.Exists)
+            {
+                return false;
+            }   
+
+            //Creating new string
+            var list = new List<string>();
+
+            string line;            
+
+            //filestream is a variable for opening the file
+            var fileStream = new FileStream("maps/" + mapName, FileMode.Open, FileAccess.Read);
+
+            using (var streamReader = new StreamReader(fileStream))
+            {
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    if (line == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    else
+                    {
+                        list.Add(line);
+                    }                           
+                }                              
+            }
+            originalMap = new char[list.Count][];
+            
+            for (int i = 0; i < list.Count; i++)
+            {
+                originalMap[i] = list[i].ToCharArray();
+            }
+            
+            return true;
         }
 
         /**
@@ -147,17 +246,22 @@ namespace GameDev
         public char[][] GetOriginalMap()
         {
             //modify
-            return new char[2][];
+
+            return originalMap;
         }
 
-        /*
+        /**
          * Returns the current map state and contains the player's move
          * without altering it 
          */
         public char[][] GetCurrentMapState()
         {
-            //modify
-            return new char[1][];
+            //returns the working map 
+            //NEED TO ADD original map to current map without altering original map
+
+            workingMap = originalMap;
+
+            return new char [0][];
         }
 
         /**
@@ -168,7 +272,8 @@ namespace GameDev
         public int[] GetPlayerPosition()
         {
             //modify
-            return new int[2];
+                        
+            return null;
         }
 
         /**
@@ -178,18 +283,18 @@ namespace GameDev
         */
         public int GetPlayerAction()
         {
-            //modify
-            return -1;
+            //returns player action
+            return (int) action;
         }
 
         public GameState GameIsRunning()
         {
-            //modify
-            return GameState.UNKOWN;
+            //returns status of game                        
+            return status;
         }
 
         /**
-         * Main method and Dntry point to the program
+         * Main method and Entry point to the program
          * ####
          * Do not change! 
         */
