@@ -91,7 +91,7 @@ namespace GameDev
 
             if (inputPart[0] == "load")
             {
-                LoadMapFromFile("maps/" + inputPart[1]);
+                LoadMapFromFile(inputPart[1]);        
             }
 
             else if (inputPart[0] == "start" && currentMap != string.Empty)
@@ -154,6 +154,10 @@ namespace GameDev
             else if(action == PlayerActions.WEST)
             {
                 workingMap = new char[1][];
+                //Replace P with @ symbol
+                //Add or subtract position making sure no wall or monster
+                //Edit working map with the character before movement
+                //Keeping track of previous position beforehand using workingmap
             }
 
 
@@ -170,9 +174,17 @@ namespace GameDev
          * The method returns true if the game is running and it can draw something, false otherwise.
         */
         public bool PrintMapToConsole()
-        {          
+        {
 
-            
+            for (int y = 0; y < workingMap.Length; y++)
+            {
+                for (int x = 0; x < workingMap[y].Length; x++)
+                {
+                    Console.Write(workingMap[y][x]);
+                }
+                Console.Write(Environment.NewLine);
+            }
+
             return true;
         }
         /**
@@ -203,12 +215,12 @@ namespace GameDev
             if (!fileInfo.Exists)
             {
                 return false;
-            }   
+            }
 
             //Creating new string
             var list = new List<string>();
 
-            string line;            
+            string line;
 
             //filestream is a variable for opening the file
             var fileStream = new FileStream("maps/" + mapName, FileMode.Open, FileAccess.Read);
@@ -217,24 +229,25 @@ namespace GameDev
             {
                 while ((line = streamReader.ReadLine()) != null)
                 {
-                    if (line == string.Empty)
-                    {
-                        continue;
-                    }
-
-                    else
+                    if (line.Trim() != string.Empty)
                     {
                         list.Add(line);
-                    }                           
-                }                              
+                    }
+                }
             }
+
             originalMap = new char[list.Count][];
-            
+
             for (int i = 0; i < list.Count; i++)
             {
                 originalMap[i] = list[i].ToCharArray();
             }
-            
+
+            workingMap = new char[originalMap.Length][];
+            Array.Copy(originalMap, workingMap, originalMap.Length);
+
+            status = GameState.START;
+
             return true;
         }
 
@@ -259,21 +272,19 @@ namespace GameDev
             //returns the working map 
             //NEED TO ADD original map to current map without altering original map
 
-            workingMap = originalMap;
-
-            return new char [0][];
+            return workingMap;
         }
 
         /**
          * Returns the current position of the player on the map
          * 
          * The first value is the y coordinate and the second is the x coordinate on the map
-         */
+         */ 
         public int[] GetPlayerPosition()
         {
             //modify
                         
-            return null;
+            return new int[2];
         }
 
         /**
