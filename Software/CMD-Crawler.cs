@@ -38,6 +38,8 @@ namespace GameDev
 
         private string currentMap;
 
+        private int x;
+        private int y;
 
         /**
          * Reads user input from the Console
@@ -91,12 +93,14 @@ namespace GameDev
 
             if (inputPart[0] == "load")
             {
-                LoadMapFromFile(inputPart[1]);        
+                LoadMapFromFile(inputPart[1]);
             }
 
             else if (inputPart[0] == "start" && currentMap != string.Empty)
             {
                 status = GameState.RUN;
+                counter = 0;
+                GetCurrentMapState();
             }
 
             if (status == GameState.RUN)
@@ -135,31 +139,61 @@ namespace GameDev
          */
         public bool Update(GameState status)
         {
+            for (int y = 0; y < workingMap.Length; y++)
+            {
+                for (int x = 0; x < workingMap[y].Length; x++)
+                {
+                    if (workingMap[y][x] == 'P')
+                    {
+                        workingMap[y][x] = '@';
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
 
-            //Player presses movement key -> set action in process input -> handle input in update -> keep track of previous position
-            //-> work out new position -> check if new position is free to move to -> move to new position -> reset old position to whatever it was before the player was there
-            //(',', 'C' whether it was a coin or empty space)
+            
             if (action == PlayerActions.NORTH)
             {
-               //Here I need to add array coordinates to move the player
-            }
-            else if (action == PlayerActions.SOUTH)
-            {
-                workingMap = new char[0][];
-            }
-            else if(action == PlayerActions.EAST)
-            {
-                workingMap = new char[0][];
-            }
-            else if(action == PlayerActions.WEST)
-            {
-                workingMap = new char[1][];
-                //Replace P with @ symbol
-                //Add or subtract position making sure no wall or monster
-                //Edit working map with the character before movement
-                //Keeping track of previous position beforehand using workingmap
+                Console.WriteLine($"{y} {x}");
+                
+                if (workingMap[y - 1][x] != '#')
+                {
+
+                    y = y - 1;
+
+                }
             }
 
+            else if (action == PlayerActions.SOUTH)
+            {
+                Console.WriteLine($"{y} {x}");
+                if (workingMap[y + 1][x] != '#')
+                {
+                    y = y + 1;
+
+                }             
+            }
+
+            else if (action == PlayerActions.EAST)
+            {
+                Console.WriteLine($"{y} {x}");
+                if (workingMap[y][x + 1] != '#')
+                {
+                    x = x + 1;
+                }
+            }
+
+            else if (action == PlayerActions.WEST) 
+            {
+                Console.WriteLine($"{y} {x}");
+                if (workingMap[y][x - 1] != '#') 
+                {
+                    x = x - 1;
+                }
+            }
 
             return false;
         }
@@ -175,7 +209,6 @@ namespace GameDev
         */
         public bool PrintMapToConsole()
         {
-
             for (int y = 0; y < workingMap.Length; y++)
             {
                 for (int x = 0; x < workingMap[y].Length; x++)
@@ -196,7 +229,6 @@ namespace GameDev
          */
         public bool PrintExtraInfo()
         {
-
             return false;
         }
 
@@ -248,6 +280,18 @@ namespace GameDev
 
             status = GameState.START;
 
+            for (int y = 0; y < workingMap.Length; y++)
+            {
+                for (int x = 0; x < workingMap[y].Length; x++)
+                {
+                    if (workingMap[y][x] == 'P')
+                    {
+                        this.x = x;
+                        this.y = y;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -258,8 +302,6 @@ namespace GameDev
          */
         public char[][] GetOriginalMap()
         {
-            //modify
-
             return originalMap;
         }
 
@@ -269,9 +311,6 @@ namespace GameDev
          */
         public char[][] GetCurrentMapState()
         {
-            //returns the working map 
-            //NEED TO ADD original map to current map without altering original map
-
             return workingMap;
         }
 
@@ -282,9 +321,24 @@ namespace GameDev
          */ 
         public int[] GetPlayerPosition()
         {
-            //modify
-                        
-            return new int[2];
+            int[] swap = { y, x };
+
+            for (int y = 0; y < workingMap.Length; y++)
+            {
+                for (int x = 0; x < workingMap[y].Length; x++)
+                {
+                    if (workingMap[y][x] == '@')
+                    {
+                        return swap;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            return swap;
         }
 
         /**
