@@ -38,6 +38,7 @@ namespace GameDev
 
         private string currentMap;
 
+        //Assigned ints for storing the players movement
         private int x;
         private int y;
 
@@ -72,7 +73,7 @@ namespace GameDev
         /// Returns the number of steps a player made on the current map. The counter only counts steps, not actions.
         /// </summary>
         public int GetStepCounter()
-        {            
+        {
             return counter;
  
         }
@@ -105,21 +106,29 @@ namespace GameDev
 
             if (status == GameState.RUN)
             {
-                if (input == "w")
+                if (input.ToLower() == "w")
                 {
+                    counter += 1;
                     action = PlayerActions.NORTH;
                 }
-                else if (input == "a")
+                else if (input.ToLower() == "a")
                 {
+                    counter += 1;
                     action = PlayerActions.WEST;
                 }
-                else if (input == "s")
+                else if (input.ToLower() == "s")
                 {
+                    counter += 1;
                     action = PlayerActions.SOUTH;
                 }
-                else if (input == "d")
+                else if (input.ToLower() == "d")
                 {
+                    counter += 1;
                     action = PlayerActions.EAST;
+                }
+                else
+                {
+                    action = PlayerActions.NOTHING;
                 }
             }
 
@@ -153,12 +162,9 @@ namespace GameDev
                     }
                 }
             }
-
             
             if (action == PlayerActions.NORTH)
             {
-                Console.WriteLine($"{y} {x}");
-                
                 if (workingMap[y - 1][x] != '#')
                 {
 
@@ -167,28 +173,25 @@ namespace GameDev
                 }
             }
 
-            else if (action == PlayerActions.SOUTH)
-            {
-                Console.WriteLine($"{y} {x}");
-                if (workingMap[y + 1][x] != '#')
-                {
-                    y = y + 1;
-
-                }             
-            }
-
             else if (action == PlayerActions.EAST)
             {
-                Console.WriteLine($"{y} {x}");
                 if (workingMap[y][x + 1] != '#')
                 {
                     x = x + 1;
                 }
             }
 
+            else if (action == PlayerActions.SOUTH)
+            {
+                if (workingMap[y + 1][x] != '#')
+                {
+                    y = y + 1;
+
+                }             
+            }            
+
             else if (action == PlayerActions.WEST) 
             {
-                Console.WriteLine($"{y} {x}");
                 if (workingMap[y][x - 1] != '#') 
                 {
                     x = x - 1;
@@ -216,7 +219,7 @@ namespace GameDev
                     Console.Write(workingMap[y][x]);
                 }
                 Console.Write(Environment.NewLine);
-            }
+            }                  
 
             return true;
         }
@@ -229,6 +232,13 @@ namespace GameDev
          */
         public bool PrintExtraInfo()
         {
+            if (status == GameState.RUN)
+            {
+                Console.WriteLine("Number of moves: " + counter);
+                Console.WriteLine($"{y} {x}");
+            }
+            
+
             return false;
         }
 
@@ -321,26 +331,11 @@ namespace GameDev
          */ 
         public int[] GetPlayerPosition()
         {
-            int[] swap = { y, x };
-
-            for (int y = 0; y < workingMap.Length; y++)
-            {
-                for (int x = 0; x < workingMap[y].Length; x++)
-                {
-                    if (workingMap[y][x] == '@')
-                    {
-                        return swap;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
+            int[] swap = { y, x };                       
 
             return swap;
         }
-
+        
         /**
         * Returns the next player action
         * 
