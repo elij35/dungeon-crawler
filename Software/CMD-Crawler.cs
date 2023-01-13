@@ -106,7 +106,11 @@ namespace GameDev
                 if (LoadMapFromFile(inputPart[1]) == true)
                 {
                     mapload = true;
-                }                
+                }
+                else
+                {
+                    Console.WriteLine("Not a map file!");
+                }
             }
 
             else if (inputPart[0] == "advanced") 
@@ -164,7 +168,7 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
             }
-        }
+        }               
 
         /**
          * The Main Game Loop. 
@@ -357,12 +361,21 @@ namespace GameDev
                 }
             }
 
-            //Change the below:
             else if (action == PlayerActions.PICKUP && iscoin == true)
             {              
                 coins += 1;
                 iscoin = false;
             }
+
+            Random rnd = new Random();
+            for (int start = 0; start <= 30; start++)
+            {
+                if (start >= 25)
+                {
+                    Console.WriteLine(rnd.Next(1, 5));
+                }
+            }
+
 
             return false;
         }
@@ -406,11 +419,17 @@ namespace GameDev
          */
         public bool PrintExtraInfo()
         {
-            if (status == GameState.RUN)
+            if (status == GameState.RUN && advanced == false)
             {
                 Console.WriteLine("Number of moves: " + counter);
                 Console.WriteLine("Coins collected: " + coins);
-            }           
+            }
+
+            if (status == GameState.RUN && advanced == true)
+            {
+                Console.WriteLine("Number of moves: " + counter);
+                Console.WriteLine("Gold pieces collected: " + coins);
+            }
 
             return false;
         }
