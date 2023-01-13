@@ -2,7 +2,6 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 
 namespace GameDev
 {
@@ -30,8 +29,6 @@ namespace GameDev
         private char[][] originalMap = new char[0][];
         private char[][] workingMap = new char[0][];
 
-
-
         /**
         * tracks if the game is running
         */
@@ -43,8 +40,10 @@ namespace GameDev
         private int x;
         private int y;
 
+        //int to store the number of coins collected
         private int coins;
 
+        //bool value to check if there is a coin to pick up
         private bool iscoin;
 
         /**
@@ -100,6 +99,12 @@ namespace GameDev
             if (inputPart[0] == "load")
             {
                 LoadMapFromFile(inputPart[1]);
+            }
+
+            else if (inputPart[0] == "advanced" && currentMap != string.Empty)
+            {
+                LoadMapFromFile("Advanced.map");
+                advanced = true;
             }
 
             else if (inputPart[0] == "start" && currentMap != string.Empty)
@@ -217,7 +222,7 @@ namespace GameDev
                         workingMap[y - 1][x] = '@';
                         workingMap[y][x] = '.';
                         y = y - 1;
-                    }                    
+                    }
                 }
             }
 
