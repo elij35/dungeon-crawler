@@ -106,8 +106,7 @@ namespace GameDev
                 if (LoadMapFromFile(inputPart[1]) == true)
                 {
                     mapload = true;
-                }
-                
+                }                
             }
 
             else if (inputPart[0] == "advanced") 
@@ -165,7 +164,6 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
             }
-            else { }
         }
 
         /**
@@ -263,9 +261,29 @@ namespace GameDev
 
                 if (workingMap[y][x + 1] != '#' && workingMap[y][x + 1] != 'M' && workingMap[y][x + 1] != 'D')
                 {
-                    workingMap[y][x + 1] = '@';
-                    workingMap[y][x] = '.';
-                    x = x + 1;
+                    if (iscoin == true)
+                    {
+                        workingMap[y][x + 1] = '@';
+                        workingMap[y][x] = 'C';
+                        x = x + 1;
+                        iscoin = false;
+                        return true;
+                    }
+
+                    if (workingMap[y][x + 1] == 'C')
+                    {
+                        iscoin = true;
+                        workingMap[y][x + 1] = '@';
+                        workingMap[y][x] = '.';
+                        x = x + 1;
+                    }
+
+                    else if (iscoin == false)
+                    {
+                        workingMap[y][x + 1] = '@';
+                        workingMap[y][x] = '.';
+                        x = x + 1;
+                    }
                 }
             }
 
@@ -313,9 +331,29 @@ namespace GameDev
 
                 if (workingMap[y][x - 1] != '#' && workingMap[y][x - 1] != 'M' && workingMap[y][x - 1] != 'D')
                 {
-                    workingMap[y][x - 1] = '@';
-                    workingMap[y][x] = '.';
-                    x = x - 1;
+                    if (iscoin == true)
+                    {
+                        workingMap[y][x - 1] = '@';
+                        workingMap[y][x] = 'C';
+                        x = x - 1;
+                        iscoin = false;
+                        return true;
+                    }
+
+                    if (workingMap[y][x - 1] == 'C')
+                    {
+                        iscoin = true;
+                        workingMap[y][x - 1] = '@';
+                        workingMap[y][x] = '.';
+                        x = x - 1;
+                    }
+
+                    else if (iscoin == false)
+                    {
+                        workingMap[y][x - 1] = '@';
+                        workingMap[y][x] = '.';
+                        x = x - 1;
+                    } 
                 }
             }
 
@@ -324,7 +362,6 @@ namespace GameDev
             {              
                 coins += 1;
                 iscoin = false;
-                Console.WriteLine("Pressed z");                
             }
 
             return false;
@@ -438,7 +475,6 @@ namespace GameDev
                     }
                 }
             }
-
             return true;
         }
                 
