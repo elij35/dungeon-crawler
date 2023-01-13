@@ -139,9 +139,7 @@ namespace GameDev
                 {
                     action = PlayerActions.NOTHING;
                 }
-            }
-
-            else { }            
+            }  
         }
 
         /**
@@ -171,72 +169,83 @@ namespace GameDev
                 }
             }
 
-            if (workingMap[y][x] == 'D')
-            {
-                status = GameState.STOP;
-            }
-
-            if (status == GameState.STOP)
-            {
-                Console.WriteLine("Congratulations! You have completed the game!!");
-                Console.WriteLine("Total number of moves: " + counter);
-                Console.WriteLine("Total coins collected: " + coins);
-                Console.Write(Environment.NewLine);
-                Console.WriteLine("To play again type: start!");
-
-            }
-
             if (action == PlayerActions.NORTH)
-            {             
+            {              
+                if (workingMap[y - 1][x] != '#' && workingMap[y - 1][x] != 'M' && workingMap[y - 1][x] != 'D')
+                {
+                    workingMap[y - 1][x] = '@';
+                    workingMap[y][x] = '.';
+                    y = y - 1;
+                }
+
                 if (workingMap[y - 1][x] == 'M' || workingMap[y - 1][x] == '#')
                 {
                     //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
-                }
+                }                
 
-                if (workingMap[y - 1][x] == 'C')
+                if (workingMap[y - 1][x] == 'D')
                 {
                     //Is a coin that needs to either be picked up or moved over
-                    workingMap[y - 1][x] = '@';
-                    workingMap[y][x] = 'C';
-                    y = y - 1;
-                }
-
-                if (workingMap[y - 1][x] != '#' && workingMap[y - 1][x] != 'M')
-                {
-                    workingMap[y - 1][x] = '@';
                     workingMap[y][x] = '.';
                     y = y - 1;
-                }
+                    Console.WriteLine("Congratulations! You have completed the game!!");
+                    Console.WriteLine("Total number of moves: " + counter);
+                    Console.WriteLine("Total coins collected: " + coins);
+                    Console.Write(Environment.NewLine);
+                    Console.WriteLine("To play again type: start!");
+                    status = GameState.STOP;
+                    action = PlayerActions.QUIT;
+                    return true;
+                }                
             }
 
             else if (action == PlayerActions.EAST)
-            {              
-                
+            {
+                if (workingMap[y][x + 1] == 'C')
+                {
+                    //Is a monster so nothing happens
+                    workingMap[y][x] = '.';
+                    x = x + 1;
+                }
+
+                if (workingMap[y][x + 1] != '#' && workingMap[y][x + 1] != 'M' && workingMap[y][x + 1] != 'C' && workingMap[y][x + 1] != 'D')
+                {
+                    workingMap[y][x + 1] = '@';
+                    workingMap[y][x] = '.';
+                    x = x + 1;
+                }
+
                 if (workingMap[y][x + 1] == 'M' || workingMap[y][x + 1] == '#')
                 {
                     //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
-                }
+                }               
 
-                if (workingMap[y][x + 1] == 'C')
+                if (workingMap[y][x + 1] == 'D')
                 {
                     //Is a monster so nothing happens
-                    workingMap[y][x + 1] = '@';
-                    workingMap[y][x] = 'C';
-                    x = x + 1;
-                }                
-
-                if (workingMap[y][x + 1] != '#' && workingMap[y][x + 1] != 'M')
-                {
-                    workingMap[y][x + 1] = '@';
                     workingMap[y][x] = '.';
                     x = x + 1;
-                }
+                    Console.WriteLine("Congratulations! You have completed the game!!");
+                    Console.WriteLine("Total number of moves: " + counter);
+                    Console.WriteLine("Total coins collected: " + coins);
+                    Console.Write(Environment.NewLine);
+                    Console.WriteLine("To play again type: start!");
+                    status = GameState.STOP;
+                    action = PlayerActions.QUIT;
+                    return true;
+                }                
             }
 
             else if (action == PlayerActions.SOUTH)
-            {               
+            {
+                if (workingMap[y + 1][x] != '#' && workingMap[y + 1][x] != 'M' && workingMap[y + 1][x] != 'C' && workingMap[y + 1][x] != 'D')
+                {
+                    workingMap[y + 1][x] = '@';
+                    workingMap[y][x] = '.';
+                    y = y + 1;
+                }
 
                 if (workingMap[y + 1][x] == 'M' || workingMap[y + 1][x] == '#')
                 {
@@ -247,22 +256,35 @@ namespace GameDev
                 if (workingMap[y + 1][x] == 'C')
                 {
                     //Is a coin that needs to either be picked up or moved over
-                    workingMap[y + 1][x] = '@';
-                    workingMap[y][x] = 'C';
-                    y = y + 1;
-                }
-
-                if (workingMap[y + 1][x] != '#' && workingMap[y + 1][x] != 'M')
-                {
-                    workingMap[y + 1][x] = '@';
                     workingMap[y][x] = '.';
                     y = y + 1;
                 }
+
+                if (workingMap[y + 1][x] == 'D')
+                {
+                    //Is a coin that needs to either be picked up or moved over
+                    workingMap[y][x] = '.';
+                    y = y + 1;
+                    Console.WriteLine("Congratulations! You have completed the game!!");
+                    Console.WriteLine("Total number of moves: " + counter);
+                    Console.WriteLine("Total coins collected: " + coins);
+                    Console.Write(Environment.NewLine);
+                    Console.WriteLine("To play again type: start!");
+                    status = GameState.STOP;
+                    action = PlayerActions.QUIT;
+                    return true;
+                }               
             }            
 
             else if (action == PlayerActions.WEST) 
             {
-                
+                if (workingMap[y][x - 1] != '#' && workingMap[y][x - 1] != 'M' && workingMap[y][x - 1] != 'C' && workingMap[y][x - 1] != 'D')
+                {
+                    workingMap[y][x - 1] = '@';
+                    workingMap[y][x] = '.';
+                    x = x - 1;
+                }
+
                 if (workingMap[y][x - 1] == 'M' || workingMap[y][x - 1] == '#')
                 {
                     //Is a monster so nothing happens
@@ -273,24 +295,32 @@ namespace GameDev
                 {
                     //Is a monster so nothing happens
                     workingMap[y][x - 1] = '@';
-                    workingMap[y][x] = 'C';
-                    x = x - 1;
-                }
-
-                if (workingMap[y][x - 1] != '#' && workingMap[y][x - 1] != 'M')
-                {
-                    workingMap[y][x - 1] = '@';
                     workingMap[y][x] = '.';
                     x = x - 1;
                 }
+
+                if (workingMap[y][x - 1] == 'D')
+                {
+                    //Ends game
+                    workingMap[y][x] = '.';
+                    x = x - 1;
+                    Console.WriteLine("Congratulations! You have completed the game!!");
+                    Console.WriteLine("Total number of moves: " + counter);
+                    Console.WriteLine("Total coins collected: " + coins);
+                    Console.Write(Environment.NewLine);
+                    Console.WriteLine("To play again type: start!");
+                    status = GameState.STOP;
+                    action = PlayerActions.QUIT;
+                    return true;
+                }          
             }
 
             else if (action == PlayerActions.PICKUP)
             {
-                if (workingMap[y][x] == 'C')
+                if (originalMap[y][x] == 'C')
                 {
-                    coins = coins + 1;
-                    workingMap[y][x] = '.';
+                    coins += 1;
+                    workingMap[y][x] = '@';
                 }
             }
 
@@ -315,8 +345,7 @@ namespace GameDev
                     Console.Write(workingMap[y][x]);
                 }
                 Console.Write(Environment.NewLine);
-            }               
-                       
+            }                                      
 
             return true;
         }
@@ -333,8 +362,14 @@ namespace GameDev
             {
                 Console.WriteLine("Number of moves: " + counter);
                 Console.WriteLine("Coins collected: " + coins);
-                //Console.WriteLine($"{y} {x}");
             }           
+
+            if (workingMap[y][x] == 'D')
+            {
+                status = GameState.INIT;
+                Console.WriteLine("Game state stopped");
+                ReadUserInput();
+            }
 
             return false;
         }
