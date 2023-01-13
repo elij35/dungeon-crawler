@@ -33,21 +33,19 @@ namespace GameDev
         * tracks if the game is running
         */
         private bool advanced = false;
-
         private string currentMap;
 
         //Assigned ints for storing the players movement
         private int x;
         private int y;
 
-        //int to store the number of coins collected
-        private int coins;
+        private int coins; //int to store the number of coins collected
+        private bool iscoin; //bool value to check if there is a coin to pick up       
+        private bool mapload; //bool value to check if the map entered by the user exists
 
-        //bool value to check if there is a coin to pick up
-        private bool iscoin;
-
-        //bool value to check if the map has been loaded by user
-        private bool mapload;
+        //Int values for storing the monsters movement
+        private int monstery;
+        private int monsterx;
 
         /**
          * Reads user input from the Console
@@ -58,31 +56,28 @@ namespace GameDev
          *  
          */
         private string ReadUserInput()
-        {            
-            string inputRead;
-
-            if (GameIsRunning() == GameState.RUN)
-            {
-                inputRead = Console.ReadKey(true).KeyChar.ToString();
-            } 
-            
+        {                        
+            string inputRead; //String for the user input
+                        
+            if (GameIsRunning() == GameState.RUN) //Checks if the game is running
+            {                
+                inputRead = Console.ReadKey(true).KeyChar.ToString(); //Storing the character entered by user
+            }             
             else
-            {
-                inputRead = Console.ReadLine();
-            }
-
-            return inputRead;
+            {                
+                inputRead = Console.ReadLine(); //Reads the entire line of user's input
+            }            
+            return inputRead; //Returns users input as string
         }
-
-        private int counter = -1;
+        
+        private int counter = -1; //Counter set to -1 before the game starts
 
         /// <summary>
         /// Returns the number of steps a player made on the current map. The counter only counts steps, not actions.
         /// </summary>
         public int GetStepCounter()
-        {
-            return counter;
- 
+        {            
+            return counter; //Returns the int counter
         }
 
         /**
@@ -97,78 +92,78 @@ namespace GameDev
          */
         public void ProcessUserInput(string input)
         {
-            string[] inputPart = input.Split(" ");
+            string[] inputPart = input.Split(" "); //A string to split the user input per word
 
-            if (inputPart[0] == "load")
+            if (inputPart[0] == "load") //Checking if first word is load
             {
-                LoadMapFromFile(inputPart[1]);
-                
-                if (LoadMapFromFile(inputPart[1]) == true)
+                LoadMapFromFile(inputPart[1]); //Runs loadmapfromfile [then the map name]
+
+                if (LoadMapFromFile(inputPart[1]) == true) //Checking if the map file exists
                 {
-                    mapload = true;
+                    mapload = true; //If the map exits change mapload to true
                 }
                 else
                 {
-                    Console.WriteLine("Not a map file!");
+                    Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
                 }
             }
 
-            else if (inputPart[0] == "advanced") 
-            {              
-                LoadMapFromFile("Advanced.map");
-                advanced = true;
-                mapload = true; 
+            else if (inputPart[0] == "advanced") //If "advanced" is entered
+            {
+                LoadMapFromFile("Advanced.map"); //Loads advanced.map                                
+                advanced = true; //Sets advanced to true
+                mapload = true;  //Sets mapload to true 
             }
 
-            else if (inputPart[0] == "start")
+            else if (inputPart[0] == "start") //If word entered is "start"
             {
-                if (mapload == true)
+                if (mapload == true) //Checking if the mapload (meaning map has loaded correctly)
                 {
-                    status = GameState.RUN;
-                    counter = 0;
-                }         
+                    status = GameState.RUN; //Change GameState to RUN as game has now started                                        
+                    counter = 0; //Changes movement counter to 0 (was set to -1 as game wasn't started before this)
+                }
                 else
                 {
-                    Console.WriteLine("You need to choose a map to load!");
+                    Console.WriteLine("You need to choose a map to load!"); //Output to console if user forgets to load a map
                 }
             }
 
-            if (status == GameState.RUN)
+            if (status == GameState.RUN) //If the game has started, start reading the character input to move the player
             {
-                if (input.ToLower() == "w")
-                {                    
+                if (input.ToLower() == "w") //For moving north
+                {
                     action = PlayerActions.NORTH;
                     counter += 1;
                 }
-                else if (input.ToLower() == "a")
-                {                    
+                else if (input.ToLower() == "a") //For moving west
+                {
                     action = PlayerActions.WEST;
                     counter += 1;
                 }
-                else if (input.ToLower() == "s")
+                else if (input.ToLower() == "s") //For moving south
                 {
                     action = PlayerActions.SOUTH;
                     counter += 1;
                 }
-                else if (input.ToLower() == "d")
+                else if (input.ToLower() == "d") //For moving east
                 {
                     action = PlayerActions.EAST;
                     counter += 1;
                 }
-                else if (input.ToLower() == "z")
+                else if (input.ToLower() == "z") //For picking up coins
                 {
                     action = PlayerActions.PICKUP;
                 }
-                else if (input.ToLower() == "q")
+                else if (input.ToLower() == "q") //For attacking monsters
                 {
                     action = PlayerActions.ATTACK;
                 }
                 else
                 {
-                    action = PlayerActions.NOTHING;
+                    action = PlayerActions.NOTHING; //Does nothing if any other key is pressed
                 }
             }
-        }               
+        }
 
         /**
          * The Main Game Loop. 
@@ -197,23 +192,17 @@ namespace GameDev
                 }
             }
 
-            if (action == PlayerActions.NORTH)
-            {
-                //check if the next tile is a coin before moving, set the bool to true, set it to false if the coin was picked up, and when leaving the tile check if its true and put a 'C' instead of a '.'
-                //then set it to false after moving
-
+            if (action == PlayerActions.NORTH) //For player moving north
+            {                
                 if (workingMap[y - 1][x] == 'M' || workingMap[y - 1][x] == '#')
                 {
-                    //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
                 }                
 
                 if (workingMap[y - 1][x] == 'D')
                 {
-                    //Is a coin that needs to either be picked up or moved over
                     workingMap[y][x] = '.';
-                    y = y - 1;
-                    
+                    y = y - 1;                    
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
@@ -246,17 +235,15 @@ namespace GameDev
                 }
             }
 
-            else if (action == PlayerActions.EAST)
+            else if (action == PlayerActions.EAST) //For player moving east
             {           
                 if (workingMap[y][x + 1] == 'M' || workingMap[y][x + 1] == '#')
                 {
-                    //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
                 }               
 
                 if (workingMap[y][x + 1] == 'D')
                 {
-                    //Is a monster so nothing happens
                     workingMap[y][x] = '.';
                     x = x + 1;                    
                     this.status = GameState.STOP;
@@ -291,17 +278,15 @@ namespace GameDev
                 }
             }
 
-            else if (action == PlayerActions.SOUTH)
+            else if (action == PlayerActions.SOUTH) //For player moving south
             {               
                 if (workingMap[y + 1][x] == 'M' || workingMap[y + 1][x] == '#')
                 {
-                    //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
                 }                
 
                 if (workingMap[y + 1][x] == 'D')
                 {
-                    //Is a coin that needs to either be picked up or moved over
                     workingMap[y][x] = '.';
                     y = y + 1;                    
                     this.status = GameState.STOP;
@@ -310,23 +295,41 @@ namespace GameDev
 
                 if (workingMap[y + 1][x] != '#' && workingMap[y + 1][x] != 'M' && workingMap[y + 1][x] != 'D')
                 {
-                    workingMap[y + 1][x] = '@';
-                    workingMap[y][x] = '.';
-                    y = y + 1;
+                    if (iscoin == true)
+                    {
+                        workingMap[y + 1][x] = '@';
+                        workingMap[y][x] = 'C';
+                        y = y + 1;
+                        iscoin = false;
+                        return true;
+                    }
+
+                    if (workingMap[y + 1][x] == 'C')
+                    {
+                        iscoin = true;
+                        workingMap[y + 1][x] = '@';
+                        workingMap[y][x] = '.';
+                        y = y + 1;
+                    }
+
+                    else if (iscoin == false)
+                    {
+                        workingMap[y + 1][x] = '@';
+                        workingMap[y][x] = '.';
+                        y = y + 1;
+                    }
                 }
             }            
 
-            else if (action == PlayerActions.WEST) 
+            else if (action == PlayerActions.WEST) //For player moving west
             {                
                 if (workingMap[y][x - 1] == 'M' || workingMap[y][x - 1] == '#')
                 {
-                    //Is a monster so nothing happens
                     action = PlayerActions.NOTHING;
                 }                
 
                 if (workingMap[y][x - 1] == 'D')
                 {
-                    //Ends game
                     workingMap[y][x] = '.';
                     x = x - 1;                    
                     this.status = GameState.STOP;
@@ -367,16 +370,16 @@ namespace GameDev
                 iscoin = false;
             }
 
+            //For monster random movement
             Random rnd = new Random();
             for (int start = 0; start <= 30; start++)
             {
                 if (start >= 25)
                 {
-                    Console.WriteLine(rnd.Next(1, 5));
+                    //Console.WriteLine(rnd.Next(1, 5));
                 }
             }
-
-
+            
             return false;
         }
 
@@ -407,7 +410,6 @@ namespace GameDev
                 Console.WriteLine("Total coins collected: " + coins);
                 Console.Write(Environment.NewLine);
             }            
-
             return true;
         }
         /**
@@ -430,7 +432,6 @@ namespace GameDev
                 Console.WriteLine("Number of moves: " + counter);
                 Console.WriteLine("Gold pieces collected: " + coins);
             }
-
             return false;
         }
 
@@ -445,52 +446,45 @@ namespace GameDev
         {
             FileInfo fileInfo = new FileInfo("maps/" + mapName);
 
-            //Checking file exists
-            if (!fileInfo.Exists)
+            if (!fileInfo.Exists) //Checking file exists
             {
-                return false;
+                return false; //If it doesn't exist it returns false
             }
 
-            //Creating new string
-            var list = new List<string>();
+            var list = new List<string>(); //Creating new string
+            string line; //String for adding lines
+            var fileStream = new FileStream("maps/" + mapName, FileMode.Open, FileAccess.Read); //filestream is a variable for opening the file
 
-            string line;
-
-            //filestream is a variable for opening the file
-            var fileStream = new FileStream("maps/" + mapName, FileMode.Open, FileAccess.Read);
-
-            using (var streamReader = new StreamReader(fileStream))
+            using (var streamReader = new StreamReader(fileStream)) //Opening file using streamreader
             {
-                while ((line = streamReader.ReadLine()) != null)
+                while ((line = streamReader.ReadLine()) != null) //Reading lines until there are no lines left to read
                 {
-                    if (line.Trim() != string.Empty)
+                    if (line.Trim() != string.Empty) //If line contains nothing then it won't add it to the list
                     {
-                        list.Add(line);
+                        list.Add(line); //Adding each line to a list
                     }
                 }
             }
 
-            originalMap = new char[list.Count][];
+            originalMap = new char[list.Count][]; //Counting the list size
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < list.Count; i++) //Loops until the length of list has been reached
             {
-                originalMap[i] = list[i].ToCharArray();
+                originalMap[i] = list[i].ToCharArray(); //Adding content from list array to the original map
             }
 
-            workingMap = new char[originalMap.Length][];
+            workingMap = new char[originalMap.Length][]; //Working map now equals content of original map in char form
+            originalMap.CopyTo(workingMap, 0); //Copying the original map to working map
+            status = GameState.START; //Changes gamestate to start
 
-            originalMap.CopyTo(workingMap, 0);
-
-            status = GameState.START;
-
-            for (int y = 0; y < workingMap.Length; y++)
+            for (int y = 0; y < workingMap.Length; y++) //Moves up the array (y axis) until it reaches the height of array
             {
-                for (int x = 0; x < workingMap[y].Length; x++)
+                for (int x = 0; x < workingMap[y].Length; x++) //Moves across the array (x axis) until it reaches the width of array
                 {
-                    if (workingMap[y][x] == 'P')
+                    if (workingMap[y][x] == 'P') //If "P" is found in the array then store the coordinates
                     {
-                        this.x = x;
-                        this.y = y;
+                        this.x = x; //Store x location
+                        this.y = y; //Store y location
                     }
                 }
             }
