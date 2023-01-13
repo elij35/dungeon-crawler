@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace GameDev
 {
@@ -43,6 +44,8 @@ namespace GameDev
         private int y;
 
         private int coins;
+
+        private bool iscoin;
 
         /**
          * Reads user input from the Console
@@ -170,7 +173,10 @@ namespace GameDev
             }
 
             if (action == PlayerActions.NORTH)
-            {             
+            {
+                //check if the next tile is a coin before moving, set the bool to true, set it to false if the coin was picked up, and when leaving the tile check if its true and put a 'C' instead of a '.'
+                //then set it to false after moving
+
                 if (workingMap[y - 1][x] == 'M' || workingMap[y - 1][x] == '#')
                 {
                     //Is a monster so nothing happens
@@ -182,20 +188,36 @@ namespace GameDev
                     //Is a coin that needs to either be picked up or moved over
                     workingMap[y][x] = '.';
                     y = y - 1;
-                    Console.WriteLine("Congratulations! You have completed the game!!");
-                    Console.WriteLine("Total number of moves: " + counter);
-                    Console.WriteLine("Total coins collected: " + coins);
-                    Console.Write(Environment.NewLine);
-                    Console.WriteLine("To play again type: start!");
+                    
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
 
                 if (workingMap[y - 1][x] != '#' && workingMap[y - 1][x] != 'M' && workingMap[y - 1][x] != 'D')
                 {
-                    workingMap[y - 1][x] = '@';
-                    workingMap[y][x] = '.';
-                    y = y - 1;
+                    if (iscoin == true)
+                    {
+                        workingMap[y - 1][x] = '@';
+                        workingMap[y][x] = 'C';
+                        y = y - 1;
+                        iscoin = false;
+                        return true;
+                    }                    
+
+                    if (workingMap[y - 1][x] == 'C')
+                    {
+                        iscoin = true;
+                        workingMap[y - 1][x] = '@';
+                        workingMap[y][x] = '.';
+                        y = y - 1;
+                    }
+
+                    else if (iscoin == false)
+                    {
+                        workingMap[y - 1][x] = '@';
+                        workingMap[y][x] = '.';
+                        y = y - 1;
+                    }                    
                 }
             }
 
@@ -211,12 +233,7 @@ namespace GameDev
                 {
                     //Is a monster so nothing happens
                     workingMap[y][x] = '.';
-                    x = x + 1;
-                    Console.WriteLine("Congratulations! You have completed the game!!");
-                    Console.WriteLine("Total number of moves: " + counter);
-                    Console.WriteLine("Total coins collected: " + coins);
-                    Console.Write(Environment.NewLine);
-                    Console.WriteLine("To play again type: start!");
+                    x = x + 1;                    
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
@@ -241,12 +258,7 @@ namespace GameDev
                 {
                     //Is a coin that needs to either be picked up or moved over
                     workingMap[y][x] = '.';
-                    y = y + 1;
-                    Console.WriteLine("Congratulations! You have completed the game!!");
-                    Console.WriteLine("Total number of moves: " + counter);
-                    Console.WriteLine("Total coins collected: " + coins);
-                    Console.Write(Environment.NewLine);
-                    Console.WriteLine("To play again type: start!");
+                    y = y + 1;                    
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
@@ -271,12 +283,7 @@ namespace GameDev
                 {
                     //Ends game
                     workingMap[y][x] = '.';
-                    x = x - 1;
-                    Console.WriteLine("Congratulations! You have completed the game!!");
-                    Console.WriteLine("Total number of moves: " + counter);
-                    Console.WriteLine("Total coins collected: " + coins);
-                    Console.Write(Environment.NewLine);
-                    Console.WriteLine("To play again type: start!");
+                    x = x - 1;                    
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
@@ -289,13 +296,12 @@ namespace GameDev
                 }
             }
 
-            else if (action == PlayerActions.PICKUP)
-            {
-                if (originalMap[y][x] == 'C')
-                {
-                    coins += 1;
-                    workingMap[y][x] = '@';
-                }
+            //Change the below:
+            else if (action == PlayerActions.PICKUP && iscoin == true)
+            {              
+                coins += 1;
+                iscoin = false;
+                Console.WriteLine("Pressed z");                
             }
 
             return false;
@@ -319,7 +325,15 @@ namespace GameDev
                     Console.Write(workingMap[y][x]);
                 }
                 Console.Write(Environment.NewLine);
-            }                                      
+            }
+
+            if (status == GameState.STOP)
+            {
+                Console.WriteLine("Congratulations! You have completed the game!!");
+                Console.WriteLine("Total number of moves: " + counter);
+                Console.WriteLine("Total coins collected: " + coins);
+                Console.Write(Environment.NewLine);
+            }            
 
             return true;
         }
