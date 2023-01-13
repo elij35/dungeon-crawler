@@ -46,6 +46,9 @@ namespace GameDev
         //bool value to check if there is a coin to pick up
         private bool iscoin;
 
+        //bool value to check if the map has been loaded by user
+        private bool mapload;
+
         /**
          * Reads user input from the Console
          * 
@@ -99,18 +102,32 @@ namespace GameDev
             if (inputPart[0] == "load")
             {
                 LoadMapFromFile(inputPart[1]);
+                
+                if (LoadMapFromFile(inputPart[1]) == true)
+                {
+                    mapload = true;
+                }
+                
             }
 
-            else if (inputPart[0] == "advanced" && currentMap != string.Empty)
-            {
+            else if (inputPart[0] == "advanced") 
+            {              
                 LoadMapFromFile("Advanced.map");
                 advanced = true;
+                mapload = true; 
             }
 
-            else if (inputPart[0] == "start" && currentMap != string.Empty)
+            else if (inputPart[0] == "start")
             {
-                status = GameState.RUN;
-                counter = 0;
+                if (mapload == true)
+                {
+                    status = GameState.RUN;
+                    counter = 0;
+                }         
+                else
+                {
+                    Console.WriteLine("You need to choose a map to load!");
+                }
             }
 
             if (status == GameState.RUN)
@@ -147,7 +164,8 @@ namespace GameDev
                 {
                     action = PlayerActions.NOTHING;
                 }
-            }  
+            }
+            else { }
         }
 
         /**
