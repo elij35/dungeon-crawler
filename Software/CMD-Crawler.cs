@@ -40,12 +40,11 @@ namespace GameDev
         private int y;
 
         private int coins; //int to store the number of coins collected
-        private bool iscoin; //bool value to check if there is a coin to pick up       
-        private bool mapload; //bool value to check if the map entered by the user exists
+        private bool isCoin; //bool value to check if there is a coin to pick up       
+        private bool mapLoad; //bool value to check if the map entered by the user exists
 
-        //Change the below!
-        private int[][] monsterPosition = new int[0][];
-        private int numberOfMonsters = 0;
+        private int[][] monsterPosition = new int[0][]; //int for storing the monster location in loaded map
+        private int numberOfMonsters = 0; //int for counting number of monsters in loaded map
 
         /**
          * Reads user input from the Console
@@ -98,10 +97,10 @@ namespace GameDev
             {
                 if (inputPart.Length > 1) //Stops crashing if nothing is inputted after load
                 {
-                LoadMapFromFile(inputPart[1]); //Runs loadmapfromfile [then the map name]
+                    LoadMapFromFile(inputPart[1]); //Runs loadmapfromfile [then the map name]
 
-                if (LoadMapFromFile(inputPart[1]) == true) //Checking if the map file exists
-                {
+                    if (LoadMapFromFile(inputPart[1]) == true) //Checking if the map file exists
+                    {
                         mapLoad = true; //If the map exits change mapload to true
                         if (inputPart[1] == "advanced.map") //Can only run advanced.map with advanced mode
                         {
@@ -109,15 +108,15 @@ namespace GameDev
                             Console.WriteLine("Advanced mode is now on!!!"); //Message for letting the user know advanced mode is enabled
                             Console.WriteLine("\n"); //Adds a new line
                             LoadMapFromFile(inputPart[1]); //Re runs the load map from file
-                }
+                        }
                     }
-                else
-                {
-                    Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
+                    else
+                    {
+                        Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
                         Console.WriteLine("Map choice: simple.map / simple2.map / advanced.map");
                         Console.WriteLine("\n");
+                    }
                 }
-            }
                 else
                 {
                     Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
@@ -130,11 +129,11 @@ namespace GameDev
             {
                 if (advanced != true)
                 {
-                advanced = true; //Sets advanced to true
+                    advanced = true; //Sets advanced to true
                     Console.WriteLine("Advanced mode is now on!"); //Message for letting the user know advanced mode is enabled
-                Console.WriteLine("\n"); //Adds a new line
+                    Console.WriteLine("\n"); //Adds a new line
                     locateMonsterPositions(); //Locates monster movement
-            }
+                }
                 else
                 {
                     Console.WriteLine("Advanced mode already enabled!");
@@ -152,11 +151,6 @@ namespace GameDev
                 {
                     Console.WriteLine("You need to choose a map to load!"); //Output to console if user forgets to load a map
                 }
-            }
-
-            else
-            {
-                Console.WriteLine("Not a recognised command");
             }
 
             if (status == GameState.RUN) //If the game has started, start reading the character input to move the player
@@ -195,6 +189,13 @@ namespace GameDev
                 }
             }
         }
+        public int monsterRandMove()
+        {
+            //For monster's random movement, it outputs random numbers from 1 to 4
+            Random rnd = new Random();
+            int move = rnd.Next(1, 5);
+            return move;
+        }
 
         /**
          * The Main Game Loop. 
@@ -224,40 +225,150 @@ namespace GameDev
             }
 
             if (action == PlayerActions.NORTH) //For player moving north
-            {                
+            {
+                for (int x = 0; x < numberOfMonsters; x++)
+                {
+                    int monsterDirection = monsterRandMove(); //Gets a random number to decide which way the monster will move
+
+                    if (monsterDirection == 1) //Monster will move North
+                    {
+                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 2) //Monster will move East
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'C') //Ensure it doesn't enter the coin tile
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 3) //Monster will move South
+                    {
+                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 4) //Monster will move West
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 if (workingMap[y - 1][x] == 'M' || workingMap[y - 1][x] == '#')
                 {
                     action = PlayerActions.NOTHING;
-                }                
+                }
 
                 if (workingMap[y - 1][x] == 'D')
                 {
                     workingMap[y][x] = '.';
-                    y = y - 1;                    
+                    y = y - 1;
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
 
                 if (workingMap[y - 1][x] != '#' && workingMap[y - 1][x] != 'M' && workingMap[y - 1][x] != 'D')
                 {
-                    if (iscoin == true)
+                    if (isCoin == true)
                     {
                         workingMap[y - 1][x] = '@';
                         workingMap[y][x] = 'C';
                         y = y - 1;
-                        iscoin = false;
+                        isCoin = false;
                         return true;
-                    }                    
+                    }
 
                     if (workingMap[y - 1][x] == 'C')
                     {
-                        iscoin = true;
+                        isCoin = true;
                         workingMap[y - 1][x] = '@';
                         workingMap[y][x] = '.';
                         y = y - 1;
                     }
 
-                    else if (iscoin == false)
+                    else if (isCoin == false)
                     {
                         workingMap[y - 1][x] = '@';
                         workingMap[y][x] = '.';
@@ -267,40 +378,150 @@ namespace GameDev
             }
 
             else if (action == PlayerActions.EAST) //For player moving east
-            {           
+            {
+                for (int x = 0; x < numberOfMonsters; x++)
+                {
+                    int monsterDirection = monsterRandMove(); //Gets a random number to decide which way the monster will move
+
+                    if (monsterDirection == 1) //Monster will move North
+                    {
+                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 2) //Monster will move East
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'C') //Ensure it doesn't enter the coin tile
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 3) //Monster will move South
+                    {
+                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 4) //Monster will move West
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 if (workingMap[y][x + 1] == 'M' || workingMap[y][x + 1] == '#')
                 {
                     action = PlayerActions.NOTHING;
-                }               
+                }
 
                 if (workingMap[y][x + 1] == 'D')
                 {
                     workingMap[y][x] = '.';
-                    x = x + 1;                    
+                    x = x + 1;
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
 
                 if (workingMap[y][x + 1] != '#' && workingMap[y][x + 1] != 'M' && workingMap[y][x + 1] != 'D')
                 {
-                    if (iscoin == true)
+                    if (isCoin == true)
                     {
                         workingMap[y][x + 1] = '@';
                         workingMap[y][x] = 'C';
                         x = x + 1;
-                        iscoin = false;
+                        isCoin = false;
                         return true;
                     }
 
                     if (workingMap[y][x + 1] == 'C')
                     {
-                        iscoin = true;
+                        isCoin = true;
                         workingMap[y][x + 1] = '@';
                         workingMap[y][x] = '.';
                         x = x + 1;
                     }
 
-                    else if (iscoin == false)
+                    else if (isCoin == false)
                     {
                         workingMap[y][x + 1] = '@';
                         workingMap[y][x] = '.';
@@ -309,111 +530,360 @@ namespace GameDev
                 }
             }
 
-            else if (action == PlayerActions.SOUTH) //For player moving south
-            {               
+            else if (action == PlayerActions.SOUTH) //For player moving South
+            {
+                for (int x = 0; x < numberOfMonsters; x++)
+                {
+                    int monsterDirection = monsterRandMove(); //Gets a random number to decide which way the monster will move
+
+                    if (monsterDirection == 1) //Monster will move North
+                    {
+                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 2) //Monster will move East
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'C') //Ensure it doesn't enter the coin tile
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 3) //Monster will move South
+                    {
+                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 4) //Monster will move West
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        continue;                    
+                    }
+                }       
+
                 if (workingMap[y + 1][x] == 'M' || workingMap[y + 1][x] == '#')
                 {
                     action = PlayerActions.NOTHING;
-                }                
+                }
 
                 if (workingMap[y + 1][x] == 'D')
                 {
                     workingMap[y][x] = '.';
-                    y = y + 1;                    
+                    y = y + 1;
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
 
                 if (workingMap[y + 1][x] != '#' && workingMap[y + 1][x] != 'M' && workingMap[y + 1][x] != 'D')
                 {
-                    if (iscoin == true)
+                    if (isCoin == true)
                     {
                         workingMap[y + 1][x] = '@';
                         workingMap[y][x] = 'C';
                         y = y + 1;
-                        iscoin = false;
+                        isCoin = false;
                         return true;
                     }
 
                     if (workingMap[y + 1][x] == 'C')
                     {
-                        iscoin = true;
+                        isCoin = true;
                         workingMap[y + 1][x] = '@';
                         workingMap[y][x] = '.';
                         y = y + 1;
                     }
 
-                    else if (iscoin == false)
+                    else if (isCoin == false)
                     {
                         workingMap[y + 1][x] = '@';
                         workingMap[y][x] = '.';
                         y = y + 1;
                     }
                 }
-            }            
+            }
 
             else if (action == PlayerActions.WEST) //For player moving west
-            {                
+            {
+                for (int x = 0; x < numberOfMonsters; x++)
+                {
+                    int monsterDirection = monsterRandMove(); //Gets a random number to decide which way the monster will move
+
+                    if (monsterDirection == 1) //Monster will move North
+                    {
+                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] - 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 2) //Monster will move East
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'C') //Ensure it doesn't enter the coin tile
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] + 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 3) //Monster will move South
+                    {
+                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0] + 1][monsterPosition[x][1]] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][0] += 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else if (monsterDirection == 4) //Monster will move West
+                    {
+                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'C')
+                        {
+                            if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'M') //Ensure it doesn't enter another monster
+                            {
+                                if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != 'D') //Ensure it doesn't enter the end tile
+                                {
+                                    if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '#') //Ensure it doesn't enter the walls
+                                    {
+                                        if (workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] != '@') //Ensure it doesn't enter the walls
+                                        {
+                                            if (advanced == true) //Checks advanced is enabled
+                                            {
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1] - 1] = 'M'; //Removes new place with the letter M
+                                                workingMap[monsterPosition[x][0]][monsterPosition[x][1]] = '.'; //Replaces the current monster position with .
+                                                monsterPosition[x][1] -= 1; //Updates monster's position to the next location along
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 if (workingMap[y][x - 1] == 'M' || workingMap[y][x - 1] == '#')
                 {
                     action = PlayerActions.NOTHING;
-                }                
+                }
 
                 if (workingMap[y][x - 1] == 'D')
                 {
                     workingMap[y][x] = '.';
-                    x = x - 1;                    
+                    x = x - 1;
                     this.status = GameState.STOP;
                     action = PlayerActions.NOTHING;
                 }
 
                 if (workingMap[y][x - 1] != '#' && workingMap[y][x - 1] != 'M' && workingMap[y][x - 1] != 'D')
                 {
-                    if (iscoin == true)
+                    if (isCoin == true)
                     {
                         workingMap[y][x - 1] = '@';
                         workingMap[y][x] = 'C';
                         x = x - 1;
-                        iscoin = false;
+                        isCoin = false;
                         return true;
                     }
 
                     if (workingMap[y][x - 1] == 'C')
                     {
-                        iscoin = true;
+                        isCoin = true;
                         workingMap[y][x - 1] = '@';
                         workingMap[y][x] = '.';
                         x = x - 1;
                     }
 
-                    else if (iscoin == false)
+                    else if (isCoin == false)
                     {
                         workingMap[y][x - 1] = '@';
                         workingMap[y][x] = '.';
                         x = x - 1;
-                    } 
+                    }
                 }
             }
 
-            else if (action == PlayerActions.PICKUP && iscoin == true)
-            {              
-                coins += 1;
-                iscoin = false;
-            }
-
-            //For monster random movement
-            Random rnd = new Random();
-            for (int start = 0; start <= 30; start++)
+            else if (action == PlayerActions.PICKUP && isCoin == true)
             {
-                if (start >= 25)
-                {
-                    //Console.WriteLine(rnd.Next(1, 5));
-                }
-            }                      
-
+                coins += 1;
+                isCoin = false;
+            }
             return false;
         }
+        public bool locateMonsterPositions() //Locates all monsters in the loaded map
+        {
+            //This checks for all the monsters 'M' in the loaded map file and increase the numberOfMonsters counter for each 'M' found
+            for (int y = 0; y < workingMap.Length; y++)
+            {
+                for (int x = 0; x < workingMap[y].Length; x++)
+                {
+                    if (workingMap[y][x] == 'M')
+                    {
+                        numberOfMonsters++;
+                    }
+                }
+            }
 
+            //Allocating each monster to the monsterPosition array
+            monsterPosition = new int[numberOfMonsters][];
+            for (int x = 0; x < numberOfMonsters; x++)
+            {
+                monsterPosition[x] = new int[2];
+            }
+
+            //Verifying the monsters in the monsterPosition array
+            int monsterVerification = 0;
+            while (monsterVerification != numberOfMonsters) //Loops until it verifies each monster's position
+            {
+                for (int y = 0; y < workingMap.Length; y++)
+                {
+                    for (int x = 0; x < workingMap[y].Length; x++)
+                    {
+                        if (workingMap[y][x] == 'M')
+                        {
+                            monsterPosition[monsterVerification][0] = y;
+                            monsterPosition[monsterVerification][1] = x;
+                            monsterVerification++;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        
         /**
          * The Main Visual Output element. 
          * It draws the new map after the player did something onto the screen.
@@ -425,6 +895,7 @@ namespace GameDev
         */
         public bool PrintMapToConsole()
         {
+            //Prints the loaded map to the console
             for (int y = 0; y < workingMap.Length; y++)
             {
                 for (int x = 0; x < workingMap[y].Length; x++)
@@ -434,6 +905,7 @@ namespace GameDev
                 Console.Write(Environment.NewLine);
             }
 
+            //If player reaches the 'D' it outputs a message
             if (status == GameState.STOP)
             {
                 Console.WriteLine("Congratulations! You have completed the game!!");
@@ -452,15 +924,17 @@ namespace GameDev
          */
         public bool PrintExtraInfo()
         {
+            //Prints coins collected in normal mode
             if (status == GameState.RUN && advanced == false)
             {
                 Console.WriteLine("Steps taken: " + counter);
                 Console.WriteLine("Coins collected: " + coins);
             }
 
+            //Prints gold pieces collected in advanced mode
             if (status == GameState.RUN && advanced == true)
             {
-                Console.WriteLine("Steps taken:: " + counter);
+                Console.WriteLine("Steps taken: " + counter);
                 Console.WriteLine("Gold pieces collected: " + coins);
             }
             return false;
@@ -497,7 +971,7 @@ namespace GameDev
                 }
             }
 
-            originalMap = new char[list.Count][]; //Counting the list size
+            originalMap = new char[list.Count][]; //Creating new char for the list length
 
             for (int i = 0; i < list.Count; i++) //Loops until the length of list has been reached
             {
@@ -506,7 +980,7 @@ namespace GameDev
 
             workingMap = new char[originalMap.Length][]; //Working map now equals content of original map in char form
             originalMap.CopyTo(workingMap, 0); //Copying the original map to working map
-            status = GameState.START; //Changes gamestate to start
+            status = GameState.START; //Changes gamestate to start to start game
 
             for (int y = 0; y < workingMap.Length; y++) //Moves up the array (y axis) until it reaches the height of array
             {
@@ -518,6 +992,12 @@ namespace GameDev
                         this.y = y; //Store y location
                     }
                 }
+            }
+
+            //Locates monster positions if advanced mode has been enabled
+            if (advanced == true)
+            {
+                locateMonsterPositions();
             }
             return true;
         }
