@@ -96,28 +96,54 @@ namespace GameDev
 
             if (inputPart[0] == "load") //Checking if first word is load
             {
+                if (inputPart.Length > 1) //Stops crashing if nothing is inputted after load
+                {
                 LoadMapFromFile(inputPart[1]); //Runs loadmapfromfile [then the map name]
 
                 if (LoadMapFromFile(inputPart[1]) == true) //Checking if the map file exists
                 {
-                    mapload = true; //If the map exits change mapload to true
+                        mapLoad = true; //If the map exits change mapload to true
+                        if (inputPart[1] == "advanced.map") //Can only run advanced.map with advanced mode
+                        {
+                            advanced = true;
+                            Console.WriteLine("Advanced mode is now on!!!"); //Message for letting the user know advanced mode is enabled
+                            Console.WriteLine("\n"); //Adds a new line
+                            LoadMapFromFile(inputPart[1]); //Re runs the load map from file
                 }
+                    }
                 else
                 {
                     Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
+                        Console.WriteLine("Map choice: simple.map / simple2.map / advanced.map");
+                        Console.WriteLine("\n");
+                }
+            }
+                else
+                {
+                    Console.WriteLine("Not a map file!"); //Outputting the error if map entered isn't a file
+                    Console.WriteLine("Map choice: simple.map / simple2.map / advanced.map");
+                    Console.WriteLine("\n");
                 }
             }
 
             else if (inputPart[0] == "advanced") //If "advanced" is entered
             {
+                if (advanced != true)
+                {
                 advanced = true; //Sets advanced to true
-                Console.WriteLine("Advanced mode is now on!!!"); //Message for letting the user know advanced mode is enabled
+                    Console.WriteLine("Advanced mode is now on!"); //Message for letting the user know advanced mode is enabled
                 Console.WriteLine("\n"); //Adds a new line
+                    locateMonsterPositions(); //Locates monster movement
+            }
+                else
+                {
+                    Console.WriteLine("Advanced mode already enabled!");
+                }
             }
 
             else if (inputPart[0] == "start") //If word entered is "start"
             {
-                if (mapload == true) //Checking if the mapload (meaning map has loaded correctly)
+                if (mapLoad == true) //Checking if the mapload (meaning map has loaded correctly)
                 {
                     status = GameState.RUN; //Change GameState to RUN as game has now started                                        
                     counter = 0; //Changes movement counter to 0 (was set to -1 as game wasn't started before this)
@@ -126,6 +152,11 @@ namespace GameDev
                 {
                     Console.WriteLine("You need to choose a map to load!"); //Output to console if user forgets to load a map
                 }
+            }
+
+            else
+            {
+                Console.WriteLine("Not a recognised command");
             }
 
             if (status == GameState.RUN) //If the game has started, start reading the character input to move the player
