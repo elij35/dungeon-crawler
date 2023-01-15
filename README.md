@@ -5,26 +5,26 @@ This game is programmed in C# using algorithms and loops to play a 2D game throu
 
 
 ## Setting up the game
-### Start by entering the map you want to play:
+### Start by loading the map:
 
 - For Simple map type:
-	- load simple.map
+	load simple.map
 	
 - For Simple2 map type:
-	- load simple2.map
+	load simple2.map
 
 - For Advanced map type:
-	- load advanced.map
+	load advanced.map
 
 
 
-### Once map is loaded
+### Once map has loaded
 
-- If you wanted to add advanced (allowing mosters to move) type:
-	- advanced
+- If you wanted to add advanced (allowing monsters to move) type:
+	advanced
 
 - To start the game type:
-	- start
+	start
 
 
 ## Game interaction
