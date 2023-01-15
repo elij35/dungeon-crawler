@@ -43,10 +43,6 @@ namespace GameDev
         private bool iscoin; //bool value to check if there is a coin to pick up       
         private bool mapload; //bool value to check if the map entered by the user exists
 
-        //Int values for storing the monsters movement
-        private int monstery;
-        private int monsterx;
-
         /**
          * Reads user input from the Console
          * 
@@ -110,9 +106,9 @@ namespace GameDev
 
             else if (inputPart[0] == "advanced") //If "advanced" is entered
             {
-                LoadMapFromFile("Advanced.map"); //Loads advanced.map                                
                 advanced = true; //Sets advanced to true
-                mapload = true;  //Sets mapload to true 
+                Console.WriteLine("Advanced mode is now on!!!"); //Message for letting the user know advanced mode is enabled
+                Console.WriteLine("\n"); //Adds a new line
             }
 
             else if (inputPart[0] == "start") //If word entered is "start"
@@ -177,17 +173,17 @@ namespace GameDev
          */
         public bool Update(GameState status)
         {
-            for (int y = 0; y < workingMap.Length; y++)
+            for (int y = 0; y < workingMap.Length; y++) //Moves through array in y (bottom to top)
             {
-                for (int x = 0; x < workingMap[y].Length; x++)
+                for (int x = 0; x < workingMap[y].Length; x++) //Moves through array in x (left to right)
                 {
-                    if (workingMap[y][x] == 'P')
+                    if (workingMap[y][x] == 'P') //If it finds a "P" in working map it replaces it with an "@" symbol
                     {
                         workingMap[y][x] = '@';
                     }
                     else
                     {
-                        continue;
+                        continue; //If "P" isn't in that location it continues
                     }
                 }
             }
@@ -378,8 +374,8 @@ namespace GameDev
                 {
                     //Console.WriteLine(rnd.Next(1, 5));
                 }
-            }
-            
+            }                      
+
             return false;
         }
 
@@ -406,8 +402,8 @@ namespace GameDev
             if (status == GameState.STOP)
             {
                 Console.WriteLine("Congratulations! You have completed the game!!");
-                Console.WriteLine("Total number of moves: " + counter);
-                Console.WriteLine("Total coins collected: " + coins);
+                Console.WriteLine("Steps taken: " + counter);
+                Console.WriteLine("Coins collected: " + coins);
                 Console.Write(Environment.NewLine);
             }            
             return true;
@@ -423,13 +419,13 @@ namespace GameDev
         {
             if (status == GameState.RUN && advanced == false)
             {
-                Console.WriteLine("Number of moves: " + counter);
+                Console.WriteLine("Steps taken: " + counter);
                 Console.WriteLine("Coins collected: " + coins);
             }
 
             if (status == GameState.RUN && advanced == true)
             {
-                Console.WriteLine("Number of moves: " + counter);
+                Console.WriteLine("Steps taken:: " + counter);
                 Console.WriteLine("Gold pieces collected: " + coins);
             }
             return false;
