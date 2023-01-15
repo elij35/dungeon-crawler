@@ -43,6 +43,10 @@ namespace GameDev
         private bool iscoin; //bool value to check if there is a coin to pick up       
         private bool mapload; //bool value to check if the map entered by the user exists
 
+        //Change the below!
+        private int[][] monsterPosition = new int[0][];
+        private int numberOfMonsters = 0;
+
         /**
          * Reads user input from the Console
          * 
