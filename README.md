@@ -9,14 +9,13 @@ The goal is to collect all the coins and reach the D on the map to finish the ga
 
 
 ## Game setup
-### Loading a map
-Mapnames include:
+The game includes three maps:
 - simple.map
 - simple2.map
 - advanced.map
 
-To load a map:
-load <mapname>
+To load a map type:
+load (mapname)
 
 
 ### Once map has loaded
@@ -32,7 +31,6 @@ load <mapname>
 
 
 ### Keyboard functions
-Pressing:
 - W = To move up
 - A = To move left
 - S = To move down
@@ -44,7 +42,7 @@ Pressing:
 - 'C' = Coins that can be collected
 - 'D' = Completing the game
 - 'M' = Monsters (these can move in advanced mode)
-- '#' = The boundary of the game
+- '#' = Walls in the game
 
 
 ## Advanced features
@@ -53,7 +51,7 @@ In this game I have programmed the following advanced features:
 - Advanced mode can be manually enabled
 
 
-## Examples of the game running
+## Pictures of the game working
 
 
 ## Video link
