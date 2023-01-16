@@ -3,10 +3,8 @@ Welcome to my Comp1000 Dungeon Crawler game
 
 This game is programmed in C# using algorithms and loops to play a 2D game through CMD
 
-
 ## The goal of the game
 The goal is to collect all the coins and reach the D on the map to finish the game
-
 
 ## Game setup
 The game includes three maps:
@@ -14,21 +12,15 @@ The game includes three maps:
 - simple2.map
 - advanced.map
 
-To load a map type:
-load (mapname)
+To load a map type: load (mapname.map)
 
+![Load map](/docs/assets/loading-map.png)
 
-### Once map has loaded
-
-- If you wanted to add advanced (allowing monsters to move) type:
-	- advanced
-
-- To start the game type:
-	- start
-
+### Once the map has loaded
+- If you wanted to add advanced (allowing monsters to move) type: advanced
+- To start the game type: start
 
 ## Game interaction
-
 
 ### Keyboard functions
 - W = To move up
@@ -37,25 +29,22 @@ load (mapname)
 - D = To move right
 - Z = When on top of coin picks coin up
 
-
 ### Map information
 - 'C' = Coins that can be collected
 - 'D' = Completing the game
 - 'M' = Monsters (these can move in advanced mode)
 - '#' = Walls in the game
 
-
 ## Advanced features
 In this game I have programmed the following advanced features:
 - Monsters can move when advanced mode is enabled
 - Advanced mode can be manually enabled
 
-
 ## Pictures of the game working
 
-
 ## Video link
-
+![Video on the game](https://www.youtube.com/watch?v=6RMElXHRIwg)
 
 ## Resources used
 - Learning how to structure github page: [how to use markdown](https://guides.github.com/features/mastering-markdown/)
+- Learning C# to make the game: [W3Schools](https://www.w3schools.com/cs/index.php/)

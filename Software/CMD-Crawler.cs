@@ -912,6 +912,7 @@ namespace GameDev
                 Console.WriteLine("Steps taken: " + counter);
                 Console.WriteLine("Coins collected: " + coins);
                 Console.Write(Environment.NewLine);
+                Console.ReadKey();
             }            
             return true;
         }
