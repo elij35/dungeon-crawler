@@ -14,11 +14,11 @@ The game includes three maps:
 
 To load a map type: load (mapname.map)
 
-![Load map](/docs/assets/loading-map.png)
-
 ### Once the map has loaded
 - If you wanted to add advanced (allowing monsters to move) type: advanced
 - To start the game type: start
+
+![Load map](/docs/assets/loading-map.png)
 
 ## Game interaction
 
@@ -40,10 +40,8 @@ In this game I have programmed the following advanced features:
 - Monsters can move when advanced mode is enabled
 - Advanced mode can be manually enabled
 
-## Pictures of the game working
-
 ## Video link
-![Video on the game](https://www.youtube.com/watch?v=6RMElXHRIwg)
+[![Video on the game](https://img.youtube.com/vi/6RMElXHRIwg/0.jpg)](https://www.youtube.com/watch?v=6RMElXHRIwg)
 
 ## Resources used
 - Learning how to structure github page: [how to use markdown](https://guides.github.com/features/mastering-markdown/)
