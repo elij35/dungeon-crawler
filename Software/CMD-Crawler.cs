@@ -40,7 +40,7 @@ namespace GameDev
         private int y;
 
         private int coins; //int to store the number of coins collected
-        private bool isCoin; //bool value to check if there is a coin to pick up       
+        private int coinStatus; //bool value to check if there is a coin to pick up       
         private bool mapLoad; //bool value to check if the map entered by the user exists
 
         private int[][] monsterPosition = new int[0][]; //int for storing the monster location in loaded map
@@ -349,30 +349,45 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
 
-                if (workingMap[y - 1][x] != '#' && workingMap[y - 1][x] != 'M' && workingMap[y - 1][x] != 'D')
+                if (coinStatus == 1)
                 {
-                    if (isCoin == true)
+                    if (workingMap[y - 1][x] != '#')
                     {
-                        workingMap[y - 1][x] = '@';
-                        workingMap[y][x] = 'C';
-                        y = y - 1;
-                        isCoin = false;
-                        return true;
+                        if (workingMap[y - 1][x] != 'M')
+                        {
+                            if (workingMap[y - 1][x] != 'D')
+                            {
+                                workingMap[y][x] = 'C';
+                                workingMap[y - 1][x] = '@';
+                                y = y - 1;
+                                coinStatus = 0;
+                                return true;
+                            }
+                        }
                     }
+                }
 
-                    if (workingMap[y - 1][x] == 'C')
-                    {
-                        isCoin = true;
-                        workingMap[y - 1][x] = '@';
-                        workingMap[y][x] = '.';
-                        y = y - 1;
-                    }
+                if (workingMap[y - 1][x] == 'C')
+                {                    
+                    workingMap[y][x] = '.';
+                    workingMap[y - 1][x] = '@';
+                    coinStatus = 1;
+                    y = y - 1;                       
+                }
 
-                    else if (isCoin == false)
+                else if (coinStatus == 0)
+                {
+                    if (workingMap[y - 1][x] != '#')
                     {
-                        workingMap[y - 1][x] = '@';
-                        workingMap[y][x] = '.';
-                        y = y - 1;
+                        if (workingMap[y - 1][x] != 'M')
+                        {
+                            if (workingMap[y - 1][x] != 'D')
+                            {
+                                workingMap[y][x] = '.';
+                                workingMap[y - 1][x] = '@';
+                                y = y - 1;
+                            }
+                        }
                     }
                 }
             }
@@ -502,30 +517,45 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
 
-                if (workingMap[y][x + 1] != '#' && workingMap[y][x + 1] != 'M' && workingMap[y][x + 1] != 'D')
+                if (coinStatus == 1)
                 {
-                    if (isCoin == true)
+                    if (workingMap[y][x + 1] != '#')
                     {
-                        workingMap[y][x + 1] = '@';
-                        workingMap[y][x] = 'C';
-                        x = x + 1;
-                        isCoin = false;
-                        return true;
+                        if (workingMap[y][x + 1] != 'M')
+                        {
+                            if (workingMap[y][x + 1] != 'D')
+                            {
+                                workingMap[y][x] = 'C';
+                                workingMap[y][x + 1] = '@';
+                                coinStatus = 0;
+                                x = x + 1;
+                                return true;
+                            }
+                        }
                     }
+                }
 
-                    if (workingMap[y][x + 1] == 'C')
-                    {
-                        isCoin = true;
-                        workingMap[y][x + 1] = '@';
-                        workingMap[y][x] = '.';
-                        x = x + 1;
-                    }
+                if (workingMap[y][x + 1] == 'C')
+                {                    
+                    workingMap[y][x] = '.';
+                    workingMap[y][x + 1] = '@';
+                    coinStatus = 1;
+                    x = x + 1;                           
+                }
 
-                    else if (isCoin == false)
+                else if (coinStatus == 0)
+                {
+                    if (workingMap[y][x + 1] != '#')
                     {
-                        workingMap[y][x + 1] = '@';
-                        workingMap[y][x] = '.';
-                        x = x + 1;
+                        if (workingMap[y][x + 1] != 'M')
+                        {
+                            if (workingMap[y][x + 1] != 'D')
+                            {
+                                workingMap[y][x] = '.';
+                                workingMap[y][x + 1] = '@';
+                                x = x + 1;
+                            }
+                        }
                     }
                 }
             }
@@ -638,9 +668,9 @@ namespace GameDev
 
                     else
                     {
-                        continue;                    
+                        continue;
                     }
-                }       
+                }
 
                 if (workingMap[y + 1][x] == 'M' || workingMap[y + 1][x] == '#')
                 {
@@ -655,30 +685,46 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
 
-                if (workingMap[y + 1][x] != '#' && workingMap[y + 1][x] != 'M' && workingMap[y + 1][x] != 'D')
+                if (coinStatus == 1)
                 {
-                    if (isCoin == true)
+                    if (workingMap[y + 1][x] != '#')
                     {
-                        workingMap[y + 1][x] = '@';
-                        workingMap[y][x] = 'C';
-                        y = y + 1;
-                        isCoin = false;
-                        return true;
+                        if (workingMap[y + 1][x] != 'M')
+                        {
+                            if (workingMap[y + 1][x] != 'D')
+                            {
+                                workingMap[y][x] = 'C';
+                                workingMap[y + 1][x] = '@';
+                                coinStatus = 0;
+                                y = y + 1;
+                                return true;
+                            }
+                        }
                     }
+                }
 
-                    if (workingMap[y + 1][x] == 'C')
-                    {
-                        isCoin = true;
-                        workingMap[y + 1][x] = '@';
-                        workingMap[y][x] = '.';
-                        y = y + 1;
-                    }
+                if (workingMap[y + 1][x] == 'C')
+                {
+                    
+                    workingMap[y][x] = '.';
+                    workingMap[y + 1][x] = '@';
+                    coinStatus = 1;
+                    y = y + 1;                            
+                }
 
-                    else if (isCoin == false)
+                else if (coinStatus == 0)
+                {
+                    if (workingMap[y + 1][x] != '#')
                     {
-                        workingMap[y + 1][x] = '@';
-                        workingMap[y][x] = '.';
-                        y = y + 1;
+                        if (workingMap[y + 1][x] != 'M')
+                        {
+                            if (workingMap[y + 1][x] != 'D')
+                            {
+                                workingMap[y][x] = '.';
+                                workingMap[y + 1][x] = '@';
+                                y = y + 1;
+                            }
+                        }
                     }
                 }
             }
@@ -808,84 +854,83 @@ namespace GameDev
                     action = PlayerActions.NOTHING;
                 }
 
-                if (workingMap[y][x - 1] != '#' && workingMap[y][x - 1] != 'M' && workingMap[y][x - 1] != 'D')
+                if (coinStatus == 1)
                 {
-                    if (isCoin == true)
+                    if (workingMap[y][x - 1] != '#')
                     {
-                        workingMap[y][x - 1] = '@';
-                        workingMap[y][x] = 'C';
-                        x = x - 1;
-                        isCoin = false;
-                        return true;
+                        if (workingMap[y][x - 1] != 'M')
+                        {
+                            if (workingMap[y][x - 1] != 'D')
+                            {
+                                workingMap[y][x] = 'C';
+                                workingMap[y][x - 1] = '@';
+                                coinStatus = 0;
+                                x = x - 1;
+                                return true;
+                            }
+                        }
                     }
+                }
 
-                    if (workingMap[y][x - 1] == 'C')
-                    {
-                        isCoin = true;
-                        workingMap[y][x - 1] = '@';
-                        workingMap[y][x] = '.';
-                        x = x - 1;
-                    }
+                if (workingMap[y][x - 1] == 'C')
+                {                   
+                    workingMap[y][x] = '.';
+                    workingMap[y][x - 1] = '@';
+                    coinStatus = 1;
+                    x = x - 1;                 
+                }
 
-                    else if (isCoin == false)
+                else if (coinStatus == 0)
+                {
+                    if (workingMap[y][x - 1] != '#')
                     {
-                        workingMap[y][x - 1] = '@';
-                        workingMap[y][x] = '.';
-                        x = x - 1;
+                        if (workingMap[y][x - 1] != 'M')
+                        {
+                            if (workingMap[y][x - 1] != 'D')
+                            {
+                                workingMap[y][x] = '.';
+                                workingMap[y][x - 1] = '@';
+                                x = x - 1;
+                            }
+                        }
                     }
                 }
             }
 
-            else if (action == PlayerActions.PICKUP && isCoin == true)
+            else if (action == PlayerActions.PICKUP && coinStatus == 1)
             {
                 coins += 1;
-                isCoin = false;
+                coinStatus = 0;
             }
             return false;
         }
         public bool locateMonsterPositions() //Locates all monsters in the loaded map
         {
-            //This checks for all the monsters 'M' in the loaded map file and increase the numberOfMonsters counter for each 'M' found
+            List<int[]> monsterPosition = new List<int[]>();
+
+            //Verifying the monsters in the monsterPosition array            
             for (int y = 0; y < workingMap.Length; y++)
             {
                 for (int x = 0; x < workingMap[y].Length; x++)
                 {
                     if (workingMap[y][x] == 'M')
                     {
+                        int[] monsterPositionArray = new int[2];
+                        monsterPositionArray[0] = y;
+                        monsterPositionArray[1] = x;
                         numberOfMonsters++;
+
+                        monsterPosition.Add(monsterPositionArray);
                     }
                 }
             }
+            this.monsterPosition = monsterPosition.ToArray();
 
-            //Allocating each monster to the monsterPosition array
-            monsterPosition = new int[numberOfMonsters][];
-            for (int x = 0; x < numberOfMonsters; x++)
-            {
-                monsterPosition[x] = new int[2];
-            }
-
-            //Verifying the monsters in the monsterPosition array
-            int monsterVerification = 0;
-            while (monsterVerification != numberOfMonsters) //Loops until it verifies each monster's position
-            {
-                for (int y = 0; y < workingMap.Length; y++)
-                {
-                    for (int x = 0; x < workingMap[y].Length; x++)
-                    {
-                        if (workingMap[y][x] == 'M')
-                        {
-                            monsterPosition[monsterVerification][0] = y;
-                            monsterPosition[monsterVerification][1] = x;
-                            monsterVerification++;
-                        }
-                    }
-                }
-            }
             return false;
         }
         
         /**
-         * The Main Visual Output element. 
+         * The Main Visual Output element.
          * It draws the new map after the player did something onto the screen.
          * 
          * This is the method where you implement your the code to draw the map ontop the screen
